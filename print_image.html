@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>宛名ラベル印刷</title>
+    <link rel="stylesheet" href="css/paper.css">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+
+<body class="A4">
+    <section class="sheet" id="originSheet">
+        <table class="print">
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            // 親ウィンドウのデータを参照
+            var datalist = window.opener.datalist;
+
+            // 12枚を超える場合はページを増やす
+            var sheets = Math.ceil(datalist.length / 12);
+            _.times(sheets - 1, function () {
+                $('BODY').append($('#originSheet').prop('outerHTML'))
+            })
+
+            // underscore.js のテンプレート機能でテーブルのセルにデータを流し込む
+            var compiled = _.template('<div class="data"><p class="zipcode"><%= data.zipcode %></p>' +
+                '<p class="address1"><%= data.address1 %></p>' +
+                '<p class="address2"><%= data.address2 %></p>' +
+                '<p class="name"><%= data.name %> 様</p></div>')
+
+            var cell = $('table.print td');
+            var count = 0;
+            _.each(datalist, function (data) {
+                $(cell[count]).html(compiled({
+                    "data": data
+                }));
+                count++;
+            })
+
+            // 印刷画面を自動的に表示。閉じると自動的にウィンドウも閉じる。
+            setTimeout(function () {
+                window.print();
+                window.close();
+            }, 200);
+        })
+    </script>
+</body>
+
+</html>

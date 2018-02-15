@@ -1,0 +1,56 @@
+/*設定画面*/
+
+p.description {
+    margin-top: 0.5em;
+}
+
+/* http://cccabinet.jpn.org/bootstrap4/javascript/forms/file-browser */
+
+.custom-file-input:lang(ja)~.custom-file-label::after {
+    content: "参照";
+}
+
+.custom-file {
+    overflow: hidden;
+}
+
+.custom-file-label {
+    white-space: nowrap;
+}
+
+
+/*印刷画面*/
+
+table.print {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 172.8mm;
+    height: 254.6mm;
+    margin: -127.3mm 0 0 -86.4mm;
+    border-collapse: collapse;
+}
+
+table.print td {
+    border: 1px solid;
+    border-color: white;
+    border-collapse: collapse;
+    position: relative;
+}
+
+table.print .data {
+    position: absolute;
+    top: 5mm;
+    left: 1mm;
+    width: 86.4mm;
+}
+
+table.print p {
+    font-size: 11pt;
+    margin: 0;
+}
+
+table.print p.name {
+    font-size: 12pt;
+    margin: 2mm 0 0;
+}

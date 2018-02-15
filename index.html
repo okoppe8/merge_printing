@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>sheet.js サンプル</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="css/app.css">
+</head>
+
+<body>
+    <div class="container-fluid">
+        <h2>宛名ラベルの作成</h2>
+        <div class="row">
+            <div class="col-12">
+                <p class="description">１．Excelファイルをダウンロードします</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <a class="btn btn-info" href="address_list.xlsx" download="宛先リスト.xlsx">ダウンロード</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <p class="description">２．Excelファイルを編集後、以下より選択します。</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="custom-file">
+                    <input type="file" class="custom-file-input" id="customFile">
+                    <label class="custom-file-label" for="customFile">ファイルを選択...</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <p class="description">３．印刷します</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <a class="btn btn-primary disabled" href="#" id="print" style="margin-right:1em">　印　　刷　</a>
+                <label for="print" id="count"></label>
+            </div>
+        </div>
+    </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.11.19/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script>
+        var X = XLSX;
+        var datalist; // 読み込んだデータを配列で格納
+
+        // Excelから読み込まれたJSONを配列に変換する
+        function json_to_list(sheet_json) {
+            // 最初の要素（１つめのシート）を取得
+            raw_records = sheet_json[_.keys(sheet_json)[0]];
+            // SheetJSの都合でキー名称が日本語になっているので、英語に直しておく。
+            converted_records =
+                _.map(raw_records,
+                    function (old_obj) {
+                        new_obj = new Object();
+                        new_obj.name = old_obj.名前;
+                        new_obj.zipcode = old_obj.郵便番号;
+                        new_obj.address1 = old_obj.住所1;
+                        new_obj.address2 = old_obj.住所2;
+                        return new_obj;
+                    });
+
+            return converted_records;
+        }
+
+        // 印刷ボタン 有効/無効の制御
+        function count_list() {
+            if (Array.isArray(datalist) && datalist.length > 0) {
+                $('#print').removeClass('disabled');
+                $('#count').text('対象件数：' + datalist.length + '件')
+            } else {
+                $('#print').addClass('disabled');
+                $('#count').text('対象件数：０件')
+            }
+        }
+
+        // ファイルの読み込み
+        function fixdata(data) {
+            var o = "",
+                l = 0,
+                w = 10240;
+            for (; l < data.byteLength / w; ++l) o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w,
+                l * w + w)));
+            o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w)));
+            return o;
+        }
+
+        // ワークブックのデータをjsonに変換
+        function to_json(workbook) {
+            var result = {};
+            workbook.SheetNames.forEach(function (sheetName) {
+                var roa = X.utils.sheet_to_json(
+                    workbook.Sheets[sheetName],
+                    {
+                        raw: true,
+                    });
+                if (roa.length > 0) {
+                    result[sheetName] = roa;
+                }
+            });
+            return result;
+        }
+
+        // ファイル選択時のメイン処理
+        function handleFile(e) {
+
+            var files = e.target.files;
+            var f = files[0];
+
+            // データの読み込み
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                var data = e.target.result;
+                var wb;
+                var arr = fixdata(data);
+                wb = X.read(btoa(arr), {
+                    type: 'base64',
+                    cellDates: true,
+                });
+
+                // シートよりJSON作成
+                jsondata = to_json(wb);
+                // JSONより配列を作成
+                datalist = json_to_list(jsondata)                
+                console.log(datalist);
+                // 件数取得、印刷ボタン 有効無効の制御。
+                count_list();
+
+            };
+            reader.readAsArrayBuffer(f);
+        }
+
+        // 画面ロード時の処理
+        $(document).ready(function () {
+
+            // ファイル選択欄 選択イベント
+            // http://cccabinet.jpn.org/bootstrap4/javascript/forms/file-browser
+            $('.custom-file-input').on('change', function (e) {
+                handleFile(e);
+                $(this).next('.custom-file-label').html($(this)[0].files[0].name);
+            })
+
+            $('.custom-file-input').on('click', function (e) {
+                $(this).val(null);
+            })
+
+            //// 印刷ボタンクリック時（印刷画面をオープンする）
+            $('#print').on('click', function (e) {
+                var url = 'print_image.html';
+                window.open(url);
+
+            })
+
+        });
+
+    </script>
+</body>
+
+</html>
