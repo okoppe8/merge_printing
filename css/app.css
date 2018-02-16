@@ -1,4 +1,8 @@
 /*設定画面*/
+@page {
+    size: A4;
+    margin: 0;
+}
 
 p.description {
     margin-top: 0.5em;
@@ -37,25 +41,42 @@ table.print {
 
 table.print td {
     border: 1px solid;
-    border-color: white;
+    border-color: black;
     border-collapse: collapse;
     position: relative;
 }
 
-table.print .data {
-    position: absolute;
-    top: 5mm;
-    left: 5mm;
-    width: 81.4mm;
+
+table.print p{
+    margin: 0;
 }
 
-table.print p {
+table.print p.zipcode {
+    position: absolute;
     font-size: 11pt;
-    margin: 0;
+    top: 5mm;
+    left: 5mm;
+}
+
+table.print p.address1 {
+    position: absolute;
     width: 80.0mm;
+    font-size: 11pt;
+    top: 12mm;
+    left: 5mm;
+}
+
+table.print p.address2 {
+    position: absolute;
+    width: 80.0mm;
+    font-size: 11pt;
+    top: 18mm;
+    left: 5mm;
 }
 
 table.print p.name {
+    position: absolute;
     font-size: 12pt;
-    margin: 2mm 0 0;
+    top: 25.0mm ;
+    left: 5mm ;
 }
