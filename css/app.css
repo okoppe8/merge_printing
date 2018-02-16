@@ -52,6 +52,7 @@ table.print .data {
 table.print p {
     font-size: 11pt;
     margin: 0;
+    width: 80.0mm;
 }
 
 table.print p.name {
