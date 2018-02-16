@@ -41,7 +41,7 @@ table.print {
 
 table.print td {
     border: 1px solid;
-    border-color: black;
+    border-color: white;
     border-collapse: collapse;
     position: relative;
 }
