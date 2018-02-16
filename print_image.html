@@ -15,7 +15,15 @@
         <table class="print">
             <tbody>
                 <tr>
-                    <td></td>
+                    <td>
+                        <div class="data">
+                            <!-- 開発時確認用 -->
+                            <p class="zipcode">123-4567</p>
+                            <p class="address1">北海道札幌市大通１丁目 １－１</p>
+                            <p class="address2">テレビタワーマンション１５７１号</p>
+                            <p class="name">テレビ 塔三 様</p>
+                        </div>
+                    </td>
                     <td></td>
                 </tr>
                 <tr>
@@ -64,12 +72,10 @@
                 '<p class="name"><%= data.name %> 様</p></div>')
 
             var cell = $('table.print td');
-            var count = 0;
-            _.each(datalist, function (data) {
-                $(cell[count]).html(compiled({
+            _.each(datalist, function (data, i) {
+                $(cell[i]).html(compiled({
                     "data": data
                 }));
-                count++;
             })
 
             // 印刷画面を自動的に表示。閉じると自動的にウィンドウも閉じる。

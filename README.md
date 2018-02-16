@@ -1,2 +1,2 @@
-# mailing_labels
-ブラウザで宛名ラベルを印刷するサンプル
+# merge_printing
+ブラウザのみでExcelファイルのデータを差し込み印刷するサンプル

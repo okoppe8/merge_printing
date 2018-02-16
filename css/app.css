@@ -4,6 +4,10 @@ p.description {
     margin-top: 0.5em;
 }
 
+a.btn{
+    width: 10em;
+}
+
 /* http://cccabinet.jpn.org/bootstrap4/javascript/forms/file-browser */
 
 .custom-file-input:lang(ja)~.custom-file-label::after {
@@ -41,8 +45,8 @@ table.print td {
 table.print .data {
     position: absolute;
     top: 5mm;
-    left: 1mm;
-    width: 86.4mm;
+    left: 5mm;
+    width: 81.4mm;
 }
 
 table.print p {
